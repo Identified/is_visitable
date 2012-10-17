@@ -137,6 +137,7 @@ module IsVisitable #:nodoc:
           visitor = identifiers[:by] || identifiers[:visitor] || identifiers[:user] || identifiers[:ip]
           is_ip = Support.is_ip?(visitor)
           visitor = visitor.to_s.strip if is_ip
+          visitor = identifiers if visitor.nil?
           
           unless Support.is_active_record?(visitor) || is_ip
             raise InvalidVisitorError, "Visitor is of wrong type: #{visitor.inspect}."
@@ -207,7 +208,7 @@ module IsVisitable #:nodoc:
       # * <tt>:account</tt> - (same as above)
       #
       def visited_by?(identifiers)
-        self.visits.exists?(:conditions => visitor_conditions(identifiers))
+        self.visits.exists?(visitor_conditions(identifiers))
       end
       alias :is_visited_by? :visited_by?
       
